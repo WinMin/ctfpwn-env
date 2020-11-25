@@ -36,6 +36,8 @@ RUN cd ~/ && \
     cd ~/pwndbg/ && ./setup.sh && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN sed -i "1c source /root/pwndbg/gdbinit.py" /root/.gdbinit
+
 ENV LANG C.UTF-8
 
 VOLUME ["/pwn"]
