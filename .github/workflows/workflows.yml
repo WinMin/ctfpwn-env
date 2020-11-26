@@ -13,7 +13,7 @@ jobs:
   job2:
       name: build ubuntu 16.04
       runs-on: ubuntu-latest
-      need: job1
+      needs: job1
       steps:
         - uses: docker/build-push-action@v1
           with:
@@ -26,7 +26,7 @@ jobs:
   job3:
       name: build ubuntu 18.04
       runs-on: ubuntu-latest
-      need: job1
+      needs: job1
       steps:
         - uses: docker/build-push-action@v1
           with:
@@ -52,7 +52,7 @@ jobs:
   job5:
       name: build ubuntu 20.04
       runs-on: ubuntu-latest
-      need: job1
+      needs: job1
       steps:
         - uses: docker/build-push-action@v1
           with:
