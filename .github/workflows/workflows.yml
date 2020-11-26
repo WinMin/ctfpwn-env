@@ -13,9 +13,9 @@ jobs:
   job2:
       name: build ubuntu 16.04
       runs-on: ubuntu-latest
+      need: job1
       steps:
         uses: docker/build-push-action@v1
-        need: job1
         with:
           username: beswing
           password: ${{secrets.DOCKER_HUB_TOKEN}}
@@ -26,9 +26,9 @@ jobs:
   job3:
       name: build ubuntu 18.04
       runs-on: ubuntu-latest
+      need: job1
       steps:
         uses: docker/build-push-action@v1
-        need: job1
         with:
           username: beswing
           password: ${{secrets.DOCKER_HUB_TOKEN}}
@@ -39,9 +39,9 @@ jobs:
   job4:
       name: build ubuntu 19.10
       runs-on: ubuntu-latest
+      need: job1
       steps:
         uses: docker/build-push-action@v1
-        need: job1
         with:
           username: beswing
           password: ${{secrets.DOCKER_HUB_TOKEN}}
@@ -52,9 +52,9 @@ jobs:
   job5:
       name: build ubuntu 20.04
       runs-on: ubuntu-latest
+      need: job1
       steps:
         uses: docker/build-push-action@v1
-        need: job1
         with:
           username: beswing
           password: ${{secrets.DOCKER_HUB_TOKEN}}
