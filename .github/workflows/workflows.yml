@@ -6,11 +6,11 @@ on:
     - cron: '0 0 1 * *'
 jobs:
     jobs1:
-      - name: Checkout code
+        name: Checkout code
         runs-on: ubuntu-latest
         uses: actions/checkout@v2
     job2:
-      - name: build ubuntu 16.04
+        name: build ubuntu 16.04
         runs-on: ubuntu-latest
         uses: docker/build-push-action@v1
         need: job1
@@ -23,7 +23,7 @@ jobs:
           tag_with_ref: true
           push: true
     job3:
-      - name: build ubuntu 18.04
+        name: build ubuntu 18.04
         runs-on: ubuntu-latest
         uses: docker/build-push-action@v1
         need: job1
@@ -36,7 +36,7 @@ jobs:
           tag_with_ref: true
           push: true
     job4:
-      - name: build ubuntu 19.10
+        name: build ubuntu 19.10
         runs-on: ubuntu-latest
         uses: docker/build-push-action@v1
         need: job1
@@ -49,7 +49,7 @@ jobs:
           tag_with_ref: true
           push: true
     job5:
-      - name: build ubuntu 20.04
+        name: build ubuntu 20.04
         runs-on: ubuntu-latest
         uses: docker/build-push-action@v1
         need: job1
