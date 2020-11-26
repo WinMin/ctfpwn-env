@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+    job1:
       - name: build ubuntu 16.04
         uses: docker/build-push-action@v1
         with:
@@ -21,6 +21,7 @@ jobs:
           tags: 16.04  
           tag_with_ref: true
           push: true
+    job2:
       - name: build ubuntu 18.04
         uses: docker/build-push-action@v1
         with:
@@ -31,6 +32,7 @@ jobs:
           tags: 18.04  
           tag_with_ref: true
           push: true
+    job3:
       - name: build ubuntu 19.10
         uses: docker/build-push-action@v1
         with:
@@ -41,6 +43,7 @@ jobs:
           tags: "19.10"
           tag_with_ref: true
           push: true
+    job4:
       - name: build ubuntu 20.04
         uses: docker/build-push-action@v1
         with:
