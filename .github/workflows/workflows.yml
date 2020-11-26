@@ -2,67 +2,53 @@ name: build swpwn docker image
 on:
   push:
     branches: main
-    path-ingore: 
-      - '**.md'
-      - 'swpwn/**'
   schedule:
     - cron: '0 0 1 * *'
 jobs:
-  job1:
-    name: Checkout code
+  path-context:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-  job2:
-      name: build ubuntu 16.04
-      runs-on: ubuntu-latest
-      needs: job1
-      steps:
-        - uses: docker/build-push-action@v1
-          with:
-            username: beswing
-            password: ${{secrets.DOCKER_HUB_TOKEN}}
-            dockerfile: build/ubuntu16.04/dockerfile
-            repository: beswing/swpwn
-            tags: 16.04 
-            push: true
-  job3:
-      name: build ubuntu 18.04
-      runs-on: ubuntu-latest
-      needs: job1
-      steps:
-        - uses: docker/build-push-action@v1
-          with:
-            username: beswing
-            password: ${{secrets.DOCKER_HUB_TOKEN}}
-            dockerfile: build/ubuntu18.04/dockerfile
-            repository: beswing/swpwn
-            tags: 18.04
-            push: true
-  job4:
-      name: build ubuntu 19.10
-      runs-on: ubuntu-latest
-      needs: job1
-      steps:
-        - uses: docker/build-push-action@v1
-          with:
-            username: beswing
-            password: ${{secrets.DOCKER_HUB_TOKEN}}
-            dockerfile: build/ubuntu19.10/dockerfile
-            repository: beswing/swpwn
-            tags: "19.10"
-            push: true
-  job5:
-      name: build ubuntu 20.04
-      runs-on: ubuntu-latest
-      needs: job1
-      steps:
-        - uses: docker/build-push-action@v1
-          with:
-            username: beswing
-            password: ${{secrets.DOCKER_HUB_TOKEN}}
-            dockerfile: build/ubuntu20.04/dockerfile
-            repository: beswing/swpwn
-            tags: 20.04
-            push: true
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: build ubuntu 16.04
+        uses: docker/build-push-action@v1
+        with:
+          username: beswing
+          password: ${{secrets.DOCKER_HUB_TOKEN}}
+          dockerfile: ./build/ubuntu16.04/dockerfile
+          repository: beswing/swpwn
+          tags: 16.04  
+          tag_with_ref: true
+          push: true
+      - name: build ubuntu 18.04
+        uses: docker/build-push-action@v1
+        with:
+          username: beswing
+          password: ${{secrets.DOCKER_HUB_TOKEN}}
+          dockerfile: ./build/ubuntu18.04/dockerfile
+          repository: beswing/swpwn
+          tags: 18.04  
+          tag_with_ref: true
+          push: true
+      - name: build ubuntu 19.10
+        uses: docker/build-push-action@v1
+        with:
+          username: beswing
+          password: ${{secrets.DOCKER_HUB_TOKEN}}
+          dockerfile: ./build/ubuntu19.10/dockerfile
+          repository: beswing/swpwn
+          tags: "19.10"
+          tag_with_ref: true
+          push: true
+      - name: build ubuntu 20.04
+        uses: docker/build-push-action@v1
+        with:
+          username: beswing
+          password: ${{secrets.DOCKER_HUB_TOKEN}}
+          dockerfile: ./build/ubuntu20.04/dockerfile
+          repository: beswing/swpwn
+          tags: 20.04
+          tag_with_ref: true
+          push: true
 
