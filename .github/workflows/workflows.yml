@@ -39,7 +39,7 @@ jobs:
   job4:
       name: build ubuntu 19.10
       runs-on: ubuntu-latest
-      need: job1
+      needs: job1
       steps:
         - uses: docker/build-push-action@v1
           with:
