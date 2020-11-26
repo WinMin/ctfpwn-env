@@ -2,6 +2,9 @@ name: build swpwn docker image
 on:
   push:
     branches: main
+    path-ingore: 
+      - '**.md'
+      - 'swpwn/**'
   schedule:
     - cron: '0 0 1 * *'
 jobs:
@@ -19,10 +22,9 @@ jobs:
           with:
             username: beswing
             password: ${{secrets.DOCKER_HUB_TOKEN}}
-            dockerfile: ./build/ubuntu16.04/dockerfile
+            dockerfile: build/ubuntu16.04/dockerfile
             repository: beswing/swpwn
             tags: 16.04 
-            tag_with_ref: true 
             push: true
   job3:
       name: build ubuntu 18.04
@@ -33,10 +35,9 @@ jobs:
           with:
             username: beswing
             password: ${{secrets.DOCKER_HUB_TOKEN}}
-            dockerfile: ./build/ubuntu18.04/dockerfile
+            dockerfile: build/ubuntu18.04/dockerfile
             repository: beswing/swpwn
             tags: 18.04
-            tag_with_ref: true  
             push: true
   job4:
       name: build ubuntu 19.10
@@ -47,10 +48,9 @@ jobs:
           with:
             username: beswing
             password: ${{secrets.DOCKER_HUB_TOKEN}}
-            dockerfile: ./build/ubuntu19.10/dockerfile
+            dockerfile: build/ubuntu19.10/dockerfile
             repository: beswing/swpwn
             tags: "19.10"
-            tag_with_ref: true
             push: true
   job5:
       name: build ubuntu 20.04
@@ -61,8 +61,8 @@ jobs:
           with:
             username: beswing
             password: ${{secrets.DOCKER_HUB_TOKEN}}
-            dockerfile: ./build/ubuntu20.04/dockerfile
+            dockerfile: build/ubuntu20.04/dockerfile
             repository: beswing/swpwn
             tags: 20.04
-            tag_with_ref: true
             push: true
+
