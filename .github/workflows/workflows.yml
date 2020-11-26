@@ -9,13 +9,13 @@ jobs:
     name: Checkout code
     runs-on: ubuntu-latest
     steps:
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v2
   job2:
       name: build ubuntu 16.04
       runs-on: ubuntu-latest
       need: job1
       steps:
-        uses: docker/build-push-action@v1
+        - uses: docker/build-push-action@v1
         with:
           username: beswing
           password: ${{secrets.DOCKER_HUB_TOKEN}}
@@ -28,7 +28,7 @@ jobs:
       runs-on: ubuntu-latest
       need: job1
       steps:
-        uses: docker/build-push-action@v1
+        - uses: docker/build-push-action@v1
         with:
           username: beswing
           password: ${{secrets.DOCKER_HUB_TOKEN}}
@@ -41,7 +41,7 @@ jobs:
       runs-on: ubuntu-latest
       need: job1
       steps:
-        uses: docker/build-push-action@v1
+        - uses: docker/build-push-action@v1
         with:
           username: beswing
           password: ${{secrets.DOCKER_HUB_TOKEN}}
@@ -54,7 +54,7 @@ jobs:
       runs-on: ubuntu-latest
       need: job1
       steps:
-        uses: docker/build-push-action@v1
+        - uses: docker/build-push-action@v1
         with:
           username: beswing
           password: ${{secrets.DOCKER_HUB_TOKEN}}
