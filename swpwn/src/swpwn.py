@@ -11,6 +11,7 @@ import platform
 import struct
 import signal
 import subprocess as sp
+import logging
 
 from distutils.dir_util import mkpath
 
@@ -24,7 +25,6 @@ SUPPORTED_UBUNTU_VERSION = [
 #    '14.04', Still many issues to be solved (version problems mostly)
     '16.04',
     '18.04',
-    '18.10',
     '19.04',
     '20.04'
 ]
@@ -84,8 +84,10 @@ def parse_args():
         help='run a pwn thread'
     )
     run_parser.add_argument(
-        'directory',
+        '--dir',
+        dest='directory',
         type=str,
+        default = '.',
         help='The directory which contains your pwn challenge'
     )
     run_parser.add_argument(
@@ -93,11 +95,7 @@ def parse_args():
         type=str,
         help='The version of ubuntu to open'
     )
-    run_parser.add_argument(
-        '--port',
-        type=int,
-        help='port of outside terminal server, default 15111'
-    )
+
     run_parser.add_argument(
         '--priv',
         action='store_true',
@@ -113,13 +111,25 @@ def parse_args():
 
     attach_parser = subparsers.add_parser(
         'attach',
-        help='attach to running thread',
+        help ='attach to container by name (or default)'
+    )
+
+    attach_parser.add_argument(
+        'attach',
+        type=str,
+        help ='attach to container by name (or default)'
     )
     attach_parser.set_defaults(func=attach_pwn)
-
+    
     end_parser = subparsers.add_parser(
         'end',
-        help='end a running thread'
+        help = 'end container by name (or all)'
+    )
+
+    end_parser.add_argument(
+        'end',
+        default=None,
+        nargs='+',
     )
     end_parser.set_defaults(func=end_pwn)
 
@@ -129,6 +139,11 @@ def parse_args():
     )
     list_parser.set_defaults(func=list_pwn)
 
+    image_parser = subparsers.add_parser(
+        'image',
+        help='list all images'
+    )
+    image_parser.set_defaults(func=image_pwn)
 
     args = parser.parse_args()
     if vars(args) != {}:
@@ -136,22 +151,6 @@ def parse_args():
     else:
         parser.print_usage()
 
-
-def _get_terminal_size():
-    p = sp.Popen('tput cols', shell=True, stdout=sp.PIPE)
-    def _print_warning():
-        print('Warning: Unable to get terminal size, you need to specify terminal size ' +
-              'manually or your command line may behave strangely')
-    if p.returncode != 0:
-        _print_warning()
-        return None, None
-    cols = int(p.stdout)
-    p = sp.Popen('tput lines', shell=True, stdout=sp.PIPE)
-    if p.returncode != 0:
-        _print_warning()
-        return None, None
-    rows = int(p.stdout)
-    return cols, rows
 
 
 def _read_container_name():
@@ -170,19 +169,7 @@ def _read_container_name():
     return container_name
 
 def _attach_interactive(name):
-    # cols, rows = _get_terminal_size()
-    # if rows and cols:
-    #     cmd = "docker exec -it {} bash -c \"{}\"".format(
-    #         name,
-    #         'stty cols {} && stty rows {} && bash'.format(
-    #             cols,
-    #             rows,
-    #         )
-    #     )
-    # else:
-    #     cmd = "docker exec -it {} '/bin/bash'".format(
-    #         name,
-    #     )
+
     cmd = "docker exec -it {} '/bin/bash'".format(
             name,
         )
@@ -199,6 +186,22 @@ __________               .__  .__  _____
     )
     os.system(cmd)
 
+def _remove_container_name(end_name):
+    if not os.path.exists(EXIST_FLAG):
+        raise Exception('swpwn is not running, consider use swpwn run first')
+
+    container_name = ''
+    with open(EXIST_FLAG, 'r+') as flag:
+        container_name = flag.read()
+        # print(container_name)
+        if container_name == '':
+            os.remove(EXIST_FLAG)
+            # raise Exception('swpwn id file is  corrupted, or unable to read saved id file. ' + \
+            #         'Cleaning corrupted id file, please shutdown the container manually')
+        if end_name in container_name:
+            sub_name = container_name.replace(end_name, '')
+            flag.write(sub_name)
+    return container_name
 
 def run_pwn(args):
     """Runs a pwn thread
@@ -207,7 +210,7 @@ def run_pwn(args):
     # port = args.port if not args.port is None else 15111
 
     if not args.ubuntu:
-        ubuntu = '16.04'
+        ubuntu = '18.04'
     else:
         # check for unsupported ubuntu version
         if args.ubuntu not in SUPPORTED_UBUNTU_VERSION:
@@ -222,24 +225,13 @@ def run_pwn(args):
     if not os.path.exists(args.directory):
         raise IOError('No such directory')
 
-    if os.path.exists(EXIST_FLAG):
-        raise AlreadyRuningException('swpwn is already running, you should either end it  to run again or attach it')
-
-    # run server before dealing with docker
-    # child_pid = os.fork()
-    # if child_pid == 0:
-    #     # sub process
-    #     server = ServerProcess(DAEMON_PID, port, daemon=True)
-    #     server.start()
-    #     server.join() # hold it!
-    #     return
 
     privileged = True if args.priv else False
 
     # First we need a running thread in the background, to hold existence
     try:
         if platform.system() != 'Darwin':
-            os.system('xhost +')
+            # os.system('xhost +')
             volumes = {
                 os.path.expanduser(args.directory) : {
                     'bind': '/pwn',
@@ -283,8 +275,8 @@ def run_pwn(args):
         raise e
 
     # Set flag, save the container id
-    with open(EXIST_FLAG, 'w') as flag:
-        flag.write(running_container.name)
+    with open(EXIST_FLAG, 'a+') as flag:
+        flag.write(running_container.name + '\n')
 
 
     # Then attach to it, needs to do it in shell since we need
@@ -296,12 +288,18 @@ def attach_pwn(args):
     """Attaches to a pwn thread
     Just sets needed docker arguments and run it as well
     """
-    container_name = _read_container_name()
+    all_container_name = _read_container_name().split()
+    if args.attach.isdigit():
+        conts = container.list()
+        _attach_interactive(conts[int(args.attach)].name) # now args.attach is index of container
+        return
+    container_name = args.attach
+    if container_name not in all_container_name:
+        print('There is no container with this name, please re-enter')
+        return 
 
     # FIXME Is it better that we just exec it with given name?
     conts = container.list(filters={'name':container_name})
-    if len(conts) != 1:
-        raise InstallationError('Installation seems to be run. There are more than one image called swpwn')
     _attach_interactive(conts[0].name)
     
 
@@ -315,26 +313,34 @@ def list_pwn(args):
     os.system('docker ps -a')
 
 
+def image_pwn(args):
+    """List all image
+    """
+    all_img = image.list()
+    for img in all_img:
+        print('{} {}'.format(img.tags[0], img.id[:20]))
+
 def end_pwn(args):
     """Ends a running thread
     """
-    container_name = _read_container_name()
-    conts = container.list(filters={'name':container_name})
+    conts = container.list()
     if len(conts) < 1:
         os.remove(EXIST_FLAG)
         raise NotRunningException('No pwn thread running, corrupted meta info file, deleted')
-    conts[0].stop()
-    os.remove(EXIST_FLAG)
-
-    # with open(DAEMON_PID, 'r') as f:
-    #     pid = int(f.read())
-
-    # kill server daemon
-    # os.kill(pid, signal.SIGTERM)
-    # os.remove(DAEMON_PID)
-
-
-
+    if 'all' in args.end:
+        conts = container.list()
+        for i in range(len(conts)):
+            conts[i].stop() 
+        # conts[0].stop()
+        os.remove(EXIST_FLAG)
+    else:
+        for name in args.end:
+            conts = container.list(filters={'name': name})
+            if len(conts) < 1:
+                print('No contianer name of {}'.format(name))
+                return 0
+            conts[0].stop()
+            _remove_container_name(name)
 
 
 
