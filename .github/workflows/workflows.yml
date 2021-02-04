@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        VERSION: ["16.04", "18.04", "19.10", "20.04"]
+        VERSION: ["16.04", "18.04", "20.04"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
