@@ -1,5 +1,7 @@
 FROM ubuntu:16.04
 
+RUN  sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn@g /etc/apt/sources.list
+RUN  apt-get clean
 
 # Apt packages
 RUN dpkg --add-architecture i386 && apt-get update && \
