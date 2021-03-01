@@ -31,6 +31,8 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     cd ~ && tar -xf /usr/src/glibc/glibc-2.23.tar.xz
 
 # python/ruby packages & gdb-plugin
+# fix -> "You are using pip version 8.1.1, however version 21.0.1 is available."
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir pwntools ropper ancypatch && \
     gem install one_gadget && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
