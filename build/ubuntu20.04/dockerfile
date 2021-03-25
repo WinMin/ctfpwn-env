@@ -29,6 +29,7 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     cd ~ && tar -xf /usr/src/glibc/glib*.tar.xz
 
 # python/ruby packages & gdb-plugin
+RUN pip3 install --upgrade pip
 RUN pip3 install --no-cache-dir pwntools ropper ropgadget ancypatch && \
     gem install one_gadget seccomp-tools && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
