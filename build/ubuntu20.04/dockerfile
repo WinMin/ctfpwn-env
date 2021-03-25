@@ -30,7 +30,8 @@ RUN dpkg --add-architecture i386 && apt-get update && \
 
 # python/ruby packages & gdb-plugin
 RUN pip3 install --upgrade pip
-RUN pip3 install --no-cache-dir pwntools ropper ropgadget ancypatch && \
+RUN python3 -m pip install --upgrade pwntools
+RUN pip3 install --no-cache-dir ropper ropgadget ancypatch && \
     gem install one_gadget seccomp-tools && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
