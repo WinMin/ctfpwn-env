@@ -254,7 +254,7 @@ def run_pwn(args):
                 }
             }
         running_container = container.run(
-            'swpwn:{}'.format(ubuntu),
+            'beswing/swpwn:{}'.format(ubuntu),
             '/bin/bash',
             cap_add=['SYS_ADMIN', 'SYS_PTRACE'],
             detach=True,

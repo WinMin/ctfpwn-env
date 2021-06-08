@@ -14,7 +14,7 @@ This is a simplified version of [ancypwn](https://github.com/Escapingbug/ancypwn
 Contains only the container management parts.
 - run     
   run a pwn environments using containers.  
-  usage:  `swpwn run --ubutnu 20.04 --priv .`
+  usage:  `swpwn run --ubuntu 20.04 --priv .`
 - list    
   list all runing container.                
   usage:  `swpwn list`
