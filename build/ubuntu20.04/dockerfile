@@ -6,6 +6,7 @@ RUN  apt-get clean
 # Apt packages
 RUN dpkg --add-architecture i386 && apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -qy \
+    sudo \
     git nasm  python3 \
     build-essential \
     python3-dev python3-pip python3-setuptools \
