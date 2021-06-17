@@ -257,6 +257,7 @@ def run_pwn(args):
             'beswing/swpwn:{}'.format(ubuntu),
             '/bin/bash',
             cap_add=['SYS_ADMIN', 'SYS_PTRACE'],
+            security_opt=['seccomp:unconfined'],
             detach=True,
             tty=True,
             volumes=volumes,
