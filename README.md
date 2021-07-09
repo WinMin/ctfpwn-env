@@ -14,16 +14,16 @@ This is a simplified version of [ancypwn](https://github.com/Escapingbug/ancypwn
 Contains only the container management parts.
 - run     
   run a pwn environments using containers.  
-  usage:  `swpwn run --ubuntu 20.04 --priv .`
+  usage:  `swpwn run --ubuntu 20.04 --priv --dir .` 
 - list    
   list all runing container.                
   usage:  `swpwn list`
 - attach  
   attach a running containers.              
-  usage:  `swpwn attach`
+  usage:  `swpwn attach [container-name]` 
 - end     
   stop and delete a running container.      
-  usage:  `swpwn end` 
+  usage:  `swpwn end [container-name]`  
 
 ## build
 
