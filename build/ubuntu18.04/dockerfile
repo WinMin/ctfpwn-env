@@ -13,6 +13,7 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     gcc-multilib \
     gdb-multiarch \
     radare2 \
+    qemu-user \
     gcc \
     wget \
     curl \
