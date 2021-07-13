@@ -15,6 +15,7 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     gdb-multiarch \
     qemu-user \
     radare2 \
+    zsh \
     gcc \
     wget \
     curl \
@@ -57,4 +58,4 @@ ENV LANG C.UTF-8
 VOLUME ["/pwn"]
 WORKDIR /pwn
 
-CMD ["/bin/bash"]
+CMD ["/bin/zsh"]
