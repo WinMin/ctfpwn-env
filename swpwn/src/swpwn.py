@@ -210,7 +210,7 @@ def run_pwn(args):
     # port = args.port if not args.port is None else 15111
 
     if not args.ubuntu:
-        ubuntu = '18.04'
+        ubuntu = SUPPORTED_UBUNTU_VERSION[-1]
     else:
         # check for unsupported ubuntu version
         if args.ubuntu not in SUPPORTED_UBUNTU_VERSION:
