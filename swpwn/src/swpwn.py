@@ -21,12 +21,16 @@ APPAUTHOR = 'swpwn'
 EXIST_FLAG = '/tmp/swpwn.id'
 DAEMON_PID = '/tmp/swpwn.daemon.pid'
 
-SUPPORTED_UBUNTU_VERSION = [
+SUPPORTED_UBUNTU_VERSION_NONLTS = [
+    '19.10',
+    '20.10',
+]
+
+SUPPORTED_UBUNTU_VERSION_LTS = [
 #    '14.04', Still many issues to be solved (version problems mostly)
     '16.04',
     '18.04',
-    '19.04',
-    '20.04'
+    '20.04',
 ]
 
 client = docker.from_env()
@@ -81,19 +85,19 @@ def parse_args():
 
     run_parser = subparsers.add_parser(
         'run',
-        help='run a pwn thread'
+        help='run a pwn container'
     )
     run_parser.add_argument(
         '--dir',
         dest='directory',
         type=str,
         default = '.',
-        help='The directory which contains your pwn challenge'
+        help='shared directory to be mounted at /pwn'
     )
     run_parser.add_argument(
         '--ubuntu',
         type=str,
-        help='The version of ubuntu to open'
+        help=f'ubuntu version (default {SUPPORTED_UBUNTU_VERSION_LTS[-1]})',
     )
 
     run_parser.add_argument(
@@ -105,7 +109,7 @@ def parse_args():
         '--name',
         type=str,
         default = None,
-        help='Set the name of the container'
+        help='name of the container'
     )
     run_parser.set_defaults(func=run_pwn)
 
@@ -120,7 +124,7 @@ def parse_args():
         help ='attach to container by name (or default)'
     )
     attach_parser.set_defaults(func=attach_pwn)
-    
+
     end_parser = subparsers.add_parser(
         'end',
         help = 'end container by name (or all)'
@@ -135,15 +139,15 @@ def parse_args():
 
     list_parser = subparsers.add_parser(
         'list',
-        help='list all runing container'
+        help='list all running containers'
     )
     list_parser.set_defaults(func=list_pwn)
 
-    image_parser = subparsers.add_parser(
-        'image',
+    images_parser = subparsers.add_parser(
+        'images',
         help='list all images'
     )
-    image_parser.set_defaults(func=image_pwn)
+    images_parser.set_defaults(func=images_pwn)
 
     args = parser.parse_args()
     if vars(args) != {}:
@@ -175,13 +179,13 @@ def _attach_interactive(name):
         )
     ColorWrite.yellow(
         r'''
-__________               .__  .__  _____       
-\______   \__  _  ______ |  | |__|/ ____\____  
- |     ___/\ \/ \/ /    \|  | |  \   __\/ __ \ 
- |    |     \     /   |  \  |_|  ||  | \  ___/ 
+__________               .__  .__  _____
+\______   \__  _  ______ |  | |__|/ ____\____
+ |     ___/\ \/ \/ /    \|  | |  \   __\/ __ \
+ |    |     \     /   |  \  |_|  ||  | \  ___/
  |____|      \/\_/|___|  /____/__||__|  \___  >
-                       \/                   \/ 
-                                 no pwn no life 
+                       \/                   \/
+                                 no pwn no life
 '''
     )
     os.system(cmd)
@@ -210,10 +214,13 @@ def run_pwn(args):
     # port = args.port if not args.port is None else 15111
 
     if not args.ubuntu:
-        ubuntu = SUPPORTED_UBUNTU_VERSION[-1]
+        ubuntu = SUPPORTED_UBUNTU_VERSION_LTS[-1]
     else:
         # check for unsupported ubuntu version
-        if args.ubuntu not in SUPPORTED_UBUNTU_VERSION:
+        if args.ubuntu not in [
+                *SUPPORTED_UBUNTU_VERSION_LTS,
+                *SUPPORTED_UBUNTU_VERSION_NONLTS,
+        ]:
             print('you are using ubuntu version %s' % args.ubuntu)
             print('this version may not be officially supported')
         ubuntu = args.ubuntu
@@ -283,10 +290,10 @@ def run_pwn(args):
     # Then attach to it, needs to do it in shell since we need
     # shell to do the input and output part(interactive part)
     _attach_interactive(running_container.name)
-    
+
 
 def attach_pwn(args):
-    """Attaches to a pwn thread
+    """Attaches to a pwn container
     Just sets needed docker arguments and run it as well
     """
     all_container_name = _read_container_name().split()
@@ -297,12 +304,12 @@ def attach_pwn(args):
     container_name = args.attach
     if container_name not in all_container_name:
         print('There is no container with this name, please re-enter')
-        return 
+        return
 
     # FIXME Is it better that we just exec it with given name?
     conts = container.list(filters={'name':container_name})
     _attach_interactive(conts[0].name)
-    
+
 
 def list_pwn(args):
     """List all running container
@@ -314,8 +321,8 @@ def list_pwn(args):
     os.system('docker ps -a')
 
 
-def image_pwn(args):
-    """List all image
+def images_pwn(args):
+    """List all images
     """
     all_img = image.list()
     for img in all_img:
@@ -331,7 +338,7 @@ def end_pwn(args):
     if 'all' in args.end:
         conts = container.list()
         for i in range(len(conts)):
-            conts[i].stop() 
+            conts[i].stop()
         # conts[0].stop()
         os.remove(EXIST_FLAG)
     else:
