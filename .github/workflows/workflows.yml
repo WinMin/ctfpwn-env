@@ -11,17 +11,17 @@ jobs:
     strategy:
       matrix: 
         VERSION: ["18.04", "20.04"]
+
     steps:
-      - 
-        name: Checkout code
+      - name: Checkout code
         uses: actions/checkout@v2
-      - 
-        name: Login to Dockerhub
+      - name: Login to Dockerhub
+        uses: docker/login-action@v1
         with:
           username: beswing
           password: ${{secrets.DOCKER_HUB_TOKEN}}
-      - 
-        name: Build and push ubuntu ${{ matrix.VERSION }}
+
+      - name: Build and push ubuntu ${{ matrix.VERSION }}
         uses: docker/build-push-action@v2
         with:
           file: ./build/ubuntu${{ matrix.VERSION }}/dockerfile
