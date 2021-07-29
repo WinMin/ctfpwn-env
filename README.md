@@ -9,7 +9,11 @@ A tool for managing glibc pwn environments using containers.
 It uses docker to manage the tools you might need, so you have separete environment, and you do all the debugging with the shared folder.
 
 ## swpwn
+### install
 
+`python3 -m pip install swpwn` 
+
+### usage
 This is a simplified version of [ancypwn](https://github.com/Escapingbug/ancypwn)
 Contains only the container management parts.
 - run     
