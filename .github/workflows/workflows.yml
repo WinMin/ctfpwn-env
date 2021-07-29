@@ -2,6 +2,8 @@ name: build swpwn docker image
 on:
   push:
     branches: main
+    paths:
+      - 'build/**'
   schedule:
     - cron: '0 0 1 * *'
 
