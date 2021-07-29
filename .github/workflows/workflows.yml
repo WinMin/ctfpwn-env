@@ -10,22 +10,26 @@ on:
 jobs:
   all:
     runs-on: ubuntu-latest
-    strategy:
-      matrix: 
-        VERSION: ["18.04", "20.04"]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Login to Dockerhub
         uses: docker/login-action@v1
         with:
           username: beswing
           password: ${{secrets.DOCKER_HUB_TOKEN}}
 
-      - name: Build and push ubuntu ${{ matrix.VERSION }}
-        uses: docker/build-push-action@v2
+      - name: Get changed dockerfiles
+        id: changed-docker-files
+        uses: tj-actions/changed-files@v9
         with:
-          file: ./build/ubuntu${{ matrix.VERSION }}/dockerfile
-          tags: beswing/swpwn:${{ matrix.VERSION }}
-          push: true
+          files: dockerfile
+
+      - name: Build and push modified dockerfiles
+        run: |
+          for dockerfile in "${{ steps.changed-docker-files.outputs.all_modified_files }}"; do
+            tag=$(basename $(dirname $dockerfile))
+            docker build --file $dockerfile --tag $tag .
+            docker push beswing/swpwn:$tag
+          done
