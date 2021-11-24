@@ -49,6 +49,9 @@ RUN cd ~ && \
     git clone https://github.com/scwuaptx/Pwngdb.git && \
     cp ~/Pwngdb/.gdbinit ~/
 
+# backup
+RUN cd ~ && \
+	wget -O ~/gdbinit-gef.py -q http://gef.blah.cat/p
 
 RUN sed -i "1c source /root/pwndbg/gdbinit.py" /root/.gdbinit
 
