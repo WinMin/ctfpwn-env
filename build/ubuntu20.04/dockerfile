@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-RUN  sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
+RUN  sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list
 RUN  apt-get clean
 
 # Apt packages
@@ -51,7 +51,7 @@ RUN cd ~ && \
 
 # backup
 RUN cd ~ && \
-	wget -O ~/gdbinit-gef.py -q http://gef.blah.cat/p
+	wget -O ~/.gdbinit-gef.py -q http://gef.blah.cat/py
 
 RUN sed -i "1c source /root/pwndbg/gdbinit.py" /root/.gdbinit
 
