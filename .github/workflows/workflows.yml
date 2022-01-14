@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        VERSION: ["18.04", "20.04"]
+        VERSION: ["18.04", "20.04", "22.04"]
 
     steps:
       - name: Checkout code
