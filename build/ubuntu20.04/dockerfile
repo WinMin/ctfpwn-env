@@ -27,6 +27,7 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     socat \
     netcat \
     ruby-dev \
+    cpio \
     lxterminal && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
