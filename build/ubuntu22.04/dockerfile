@@ -1,12 +1,12 @@
 FROM ubuntu:22.04
 
-RUN  sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list
-RUN  apt-get clean
+#RUN  sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list
+#RUN  apt-get clean
 
 # Apt packages
 RUN dpkg --add-architecture i386 && apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -qy \
-    sudo \ 
+    sudo \
     git nasm  python3 \
     build-essential \
     python3-dev python3-pip python3-setuptools \
@@ -14,7 +14,6 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     libc6-dbg:i386 \
     gcc-multilib \
     gdb-multiarch \
-    radare2 \
     zsh \
     qemu-user \
     gcc \
@@ -53,6 +52,11 @@ RUN cd ~ && \
 # backup
 RUN cd ~ && \
 	wget -O ~/.gdbinit-gef.py -q http://gef.blah.cat/py
+
+# radare2
+RUN git clone https://github.com/radareorg/radare2  && \
+    sh -c radare2/sys/install.sh
+
 
 RUN sed -i "1c source /root/pwndbg/gdbinit.py" /root/.gdbinit
 
