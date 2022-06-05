@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:18.04
 
 #RUN  sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list
 #RUN  apt-get clean
@@ -16,6 +16,7 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     gdb-multiarch \
     zsh \
     qemu-user \
+    qemu-system \
     gcc \
     wget \
     curl \
@@ -34,10 +35,15 @@ RUN dpkg --add-architecture i386 && apt-get update && \
 
 # python/ruby packages & gdb-plugin
 RUN pip3 install --upgrade pip
-RUN python3 -m pip install --upgrade pwntools
+RUN python3 -m pip install --ignore-installed pwntools
 RUN pip3 install --no-cache-dir ropper ropgadget ancypatch && \
     gem install one_gadget seccomp-tools && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# install binwalk
+RUN cd ~ && git clone https://github.com/ReFirmLabs/binwalk.git && \
+    cd ~/binwalk && \
+    python3 setup.py install
 
 # git installaing package
 RUN cd ~/ && \
@@ -57,6 +63,10 @@ RUN cd ~ && \
 RUN git clone https://github.com/radareorg/radare2  && \
     sh -c radare2/sys/install.sh
 
+# install oh-my-zsh
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
+    sed -i 's/robbyrussell/ys/g' /root/.zshrc
+
 
 RUN sed -i "1c source /root/pwndbg/gdbinit.py" /root/.gdbinit
 
@@ -64,5 +74,4 @@ ENV LANG C.UTF-8
 
 VOLUME ["/pwn"]
 WORKDIR /pwn
-
 CMD ["/bin/zsh"]

@@ -24,8 +24,8 @@ jobs:
           password: ${{secrets.DOCKER_HUB_TOKEN}}
 
       - name: Build and push ubuntu ${{ matrix.VERSION }}
-        uses: docker/build-push-action@v2
-        with:
-          file: ./build/ubuntu${{ matrix.VERSION }}/dockerfile
-          tags: beswing/swpwn:${{ matrix.VERSION }}
-          push: true
+        run: |
+            ls -al .
+            sed -i -e 's/FROM ubuntu:22.04/FROM ubuntu:${{ matrix.VERSION }}/g' build/Dockerfile
+            docker build -t beswing/swpwn:${{ matrix.VERSION }} build/
+            docker push beswing/swpwn:${{ matrix.VERSION }}
