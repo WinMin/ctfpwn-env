@@ -173,7 +173,7 @@ def main(args):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='MacOS subsystem Linux power by Docker')
+    parser = argparse.ArgumentParser(description='MacOS Subsystem for Linux power by Docker')
     parser.add_argument('--ubuntu', default='22.04',type=str, help='choice ubuntu version')
     parser.add_argument('--name', default='msl', type=str, help='container name')
     parser.add_argument('--priv', action='store_true', help='privileged boot , so you can use something like kvm')

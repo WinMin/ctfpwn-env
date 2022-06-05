@@ -28,7 +28,7 @@ Contains only the container management parts.
   stop and delete a running container.      
   usage:  `swpwn end [container-name]`  
 
-## MSL (MacOS subsystem Linux power by Docker)
+## MSL (MacOS subsystem for Linux power by Docker)
 Inspired by WSL, running a persistent container on MacOS via Docker
 
 ### usage
@@ -36,7 +36,7 @@ Inspired by WSL, running a persistent container on MacOS via Docker
 $ msl --help
 usage: msl [-h] [--ubuntu UBUNTU] [--name NAME] [--priv] [--dir DIRECTORY] [--run RUN [RUN ...]] [--commit] [--loglevel LOGLEVEL]
 
-MacOS subsystem Linux power by Docker
+MacOS subsystem for Linux power by Docker
 
 optional arguments:
   -h, --help           show this help message and exit
