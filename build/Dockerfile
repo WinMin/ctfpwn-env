@@ -28,7 +28,9 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     netcat \
     ruby-dev \
     cpio \
-    lxterminal && \
+    liblzo2-dev \
+    telnet \
+    squashfs-tools && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     cd ~ && tar -xf /usr/src/glibc/glib*.tar.xz
@@ -36,7 +38,7 @@ RUN dpkg --add-architecture i386 && apt-get update && \
 # python/ruby packages & gdb-plugin
 RUN pip3 install --upgrade pip
 RUN python3 -m pip install --ignore-installed pwntools
-RUN pip3 install --no-cache-dir ropper ropgadget ancypatch && \
+RUN pip3 install --no-cache-dir ropper ropgadget ancypatch python-lzo && \
     gem install one_gadget seccomp-tools && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -45,7 +47,12 @@ RUN cd ~ && git clone https://github.com/ReFirmLabs/binwalk.git && \
     cd ~/binwalk && \
     python3 setup.py install
 
-# git installaing package
+# install ubi_reader
+RUN cd ~ && https://github.com/jrspruitt/ubi_reader.git && \
+    cd ubi_reader && python3 setup.py install
+
+
+# install gdb plugin
 RUN cd ~/ && \
     git clone https://github.com/pwndbg/pwndbg.git && \
     cd ~/pwndbg/ && ./setup.sh && \
@@ -55,11 +62,11 @@ RUN cd ~ && \
     git clone https://github.com/scwuaptx/Pwngdb.git && \
     cp ~/Pwngdb/.gdbinit ~/
 
-# backup
+# gef 
 RUN cd ~ && \
 	wget -O ~/.gdbinit-gef.py -q http://gef.blah.cat/py
 
-# radare2
+# build radare2
 RUN git clone https://github.com/radareorg/radare2  && \
     sh -c radare2/sys/install.sh
 
