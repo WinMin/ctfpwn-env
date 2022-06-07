@@ -48,7 +48,7 @@ RUN cd ~ && git clone https://github.com/ReFirmLabs/binwalk.git && \
     python3 setup.py install
 
 # install ubi_reader
-RUN cd ~ && https://github.com/jrspruitt/ubi_reader.git && \
+RUN cd ~ && git clone https://github.com/jrspruitt/ubi_reader.git && \
     cd ubi_reader && python3 setup.py install
 
 
