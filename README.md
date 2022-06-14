@@ -119,6 +119,6 @@ provided tools
 ### pull
 
 ```bash
-docker pulll beswing/swpwn:22.04
+docker pull beswing/swpwn:22.04
 ```
 
