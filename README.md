@@ -2,7 +2,7 @@
 ## introduction
 A project that uses containers to manage linux pwn environments.
 
-## docker mages
+## docker images
 
 Store dockerfile for some versions of ubuntu.
 Build and push a docker image using GitHub action.
