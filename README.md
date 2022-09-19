@@ -2,6 +2,33 @@
 ## introduction
 A project that uses containers to manage linux pwn environments.
 
+## docker mages
+
+Store dockerfile for some versions of ubuntu.
+Build and push a docker image using GitHub action.
+
+All image can be found here: [beswing/swpwn](https://hub.docker.com/repository/docker/beswing/swpwn)
+
+provided tools
+
+- pwndbg
+- pwntools
+- keystone assmebler
+- capstone disassembler
+- glibc source and debug version glibc(so we can debug libc with source)
+- Ropper
+- ROPGadgets
+- one_gadget
+- seccomp-tools
+...
+
+### pull
+sample：
+
+```bash
+docker pull beswing/swpwn:22.04
+```
+
 ## swpwn
 A tool for managing glibc pwn environments using containers. This is a simplified version of [ancypwn](https://github.com/Escapingbug/ancypwn)
 
@@ -95,30 +122,5 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 8503960       0x81C298        Zip archive data, at least v2.0 to extract, compressed size: 4258, uncompressed size: 15874, name: online_mobile.htm
 8508265       0x81D369        Zip archive data, at least v2.0 to extract, compressed size: 2733, uncompressed size: 6624, name: offline.htm
 8511039       0x81DE3F        Zip archive data, at least v2.0 to extract, compressed size: 4524, uncompressed size: 15206, name: online.htm
-```
-## build
-
-Store dockerfile for some versions of ubuntu.
-Build and push a docker image using GitHub action.
-
-All image can be found here: [beswing/swpwn](https://hub.docker.com/repository/docker/beswing/swpwn)
-
-provided tools
-
-- pwndbg
-- pwntools
-- keystone assmebler
-- capstone disassembler
-- glibc source and debug version glibc(so we can debug libc with source)
-- Ropper
-- ROPGadgets
-- one_gadget
-- seccomp-tools
-...
-
-### pull
-
-```bash
-docker pull beswing/swpwn:22.04
 ```
 
