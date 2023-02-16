@@ -1,8 +1,4 @@
 #!/usr/bin/env  python3
-
-# author : swing 
-# mail   : swing@mail.exp.sh
-
 import docker
 import os
 import platform
@@ -69,6 +65,7 @@ def run_container(args):
         }
 
     privileged = True if args.priv else False
+    print(privileged)
     try:
         running_container = container.run(
             'beswing/swpwn:{}'.format(ubuntu),
@@ -101,18 +98,19 @@ def check_container(args):
 
 
 def commit_container(args):
+    if args.commit_tag is None:
+        logging.error('must set commit tag use [--commit-tag]')
+        exit(0)
     try:
-        if check_container(args):
-            sub_container = container.get(args.name)
-            # old_image_sha = container.get(args.name).image.id.split(':')[1]
-            sub_container.commit(repository='beswing/swpwn', tag=args.ubuntu)
-            sub_container.stop()
-            # sub_container.remove(old_image_sha)
-
+        if check_container():
+            msl_container = container.get(args.name)
+            msl_container.commit(repository='beswing/swpwn',tag='22.04')
+            msl_container.stop()
+            msl_container.remove()
     except Exception as e:
         logging.error('some error: {}'.format(e))
-
-
+        return False
+    
 def remove_container(args):
     try:
         sub_container = container.get(args.name)
@@ -121,16 +119,7 @@ def remove_container(args):
     except Exception as e:
         logging.error('some error: {}'.format(e))
         return False
-
-
-def check_container_exists(args):
-    try:
-        sub_container = container.get(args.name)
-        return True
-    except Exception as e:
-        logging.error('some error: {}'.format(e))
-        return False
-
+    
 def _attach_interactive(name,command):
 
     cmd = "docker exec -it {} {}".format(
@@ -153,15 +142,18 @@ __________               .__  .__  _____
 def run_command(args):
 
     mslCmd = ' '.join(args.run)
-    command = 'bash -c "cd \'{}\' ; {}"'.format(PATH, mslCmd)
+    print(args.directory)
+    if args.directory == None:
+        command = 'bash -c "cd \'{}\' ; {}"'.format(PATH, mslCmd)
+    else:
+        command = 'bash -c "cd \'{}\' ; {}"'.format('/workhub', mslCmd)
     logging.info('Running command: {}'.format(command))
     _attach_interactive(args.name, command)
 
 def main(args):
 
-    if args.commit == True:
+    if args.commit ==True:
         commit_container(args)
-        exit()
     elif args.priv == True or args.directory or args.restart:
         remove_container(args)
 
@@ -173,15 +165,17 @@ def main(args):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='MacOS Subsystem for Linux power by Docker')
+    parser = argparse.ArgumentParser(description='MacOS subsystem Linux power by Docker')
     parser.add_argument('--ubuntu', default='22.04',type=str, help='choice ubuntu version')
     parser.add_argument('--name', default='msl', type=str, help='container name')
     parser.add_argument('--priv', action='store_true', help='privileged boot , so you can use something like kvm')
     parser.add_argument('--dir', dest='directory',type=str, help='shared directory to be mounted at /workhub')
     parser.add_argument('--run', default=['zsh'], dest='run', type=str, help='run command', nargs='+')
     parser.add_argument('--commit',action='store_true', help='commit container to image')
-    parser.add_argument('--loglevel', default='INFO', type=str, help='log level')
+    parser.add_argument('--commit-name',default='beswing/swpwn', type=str, help='commint name' )
+    parser.add_argument('--commit-tag',type=str,help='commit tag')
     parser.add_argument('--restart', action='store_true', default=False, help='restart')
+    parser.add_argument('--loglevel', default='INFO', type=str, help='log level')
     args = parser.parse_args()
     # run_container(args)
     LOGFORMAT = "[%(funcName)s() - %(filename)s:%(lineno)s ] %(message)s"
