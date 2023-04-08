@@ -30,10 +30,11 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     cpio \
     liblzo2-dev \
     telnet \
+    file \
     squashfs-tools && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    cd ~ && tar -xf /usr/src/glibc/glib*.tar.xz
+    cd ~ && tar -xf /usr/src/glibc/glib*.tar.xz 
 
 # python/ruby packages & gdb-plugin
 RUN pip3 install --upgrade pip
