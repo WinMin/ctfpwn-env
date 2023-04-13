@@ -31,6 +31,7 @@ RUN dpkg --add-architecture i386 && apt-get update && \
     liblzo2-dev \
     telnet \
     file \
+    patchelf \
     squashfs-tools && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
