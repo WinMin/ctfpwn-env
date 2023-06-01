@@ -50,9 +50,9 @@ RUN cd ~ && git clone https://github.com/ReFirmLabs/binwalk.git && \
     python3 setup.py install
 
 # install ubi_reader
-RUN cd ~ && git clone https://github.com/jrspruitt/ubi_reader.git && \
-    cd ubi_reader && python3 setup.py install
-
+RUN pip install --user ubi_reader
+# RUN cd ~ && git clone https://github.com/jrspruitt/ubi_reader.git && \
+#     cd ubi_reader && python3 setup.py install
 
 # install gdb plugin
 RUN cd ~/ && \
